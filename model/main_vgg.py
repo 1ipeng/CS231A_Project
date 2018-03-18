@@ -30,17 +30,15 @@ if args.train:
 	    train_evaluate.train(train_resized_images, train_labels, dev_resized_images, dev_labels, model_dir, last_path)
 	else:
 	    train_evaluate.train(train_resized_images, train_labels, dev_resized_images, dev_labels, model_dir)
+
 if args.predict:
     # X = dev_resized_images
     # Y = dev_labels
-    # showBestResult(train_evaluate, X, Y, dev_L, dev_bins, dev_ab, best_path)
-    # show5Results(train_evaluate, X, Y, dev_L, dev_bins, dev_ab, 10, best_path)
-    # show1Result(train_evaluate, X, Y, dev_L, dev_bins, dev_ab, 0, best_path)
+
+    # show1Result(train_evaluate, X, Y, 0, last_path)
 
     X = train_resized_images
     Y = train_labels
 
-    # showBestResult(train_evaluate, X, Y, train_L, train_bins, train_ab, best_path)
-    # show5Results(train_evaluate, X, Y, train_L, train_bins, train_ab, 10, best_path)
-    # show1Result(train_evaluate, X, Y, dev_L, dev_bins, train_ab, 0, last_path)
+    show1Result(train_evaluate, X, Y, 0, last_path)
 
