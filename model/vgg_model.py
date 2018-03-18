@@ -36,6 +36,7 @@ class vgg_model:
 
     def compute_accuracy(self, logits, labels):
         predictions = tf.cast(tf.argmax(logits, axis = 1), tf.int32)
+        predictions = tf.reshape(predictions, [tf.shape(predictions)[0], 1])
         accuracy = tf.reduce_mean(tf.cast(tf.equal(labels, predictions), tf.float32))
         return predictions, accuracy
 

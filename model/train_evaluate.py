@@ -10,14 +10,12 @@ class train_evaluate:
         self.params = params
         self.weights_file = weights_file
         self.model_type = model_type
-        self.train_model, self.test_model = self.build_model(model)
+        self.model = self.build_model(model)
 
     def build_model(self, model):
         with tf.variable_scope('model', reuse = False):
-            train_model = model(self.params, is_training = True) #batch norm
-        with tf.variable_scope('model', reuse = True):
-            test_model = model(self.params, is_training = False)
-        return train_model, test_model
+            model = model(self.params, is_training = True) #batch norm
+        return model
 
     def restoreSession(self, last_saver, sess, restore_from, is_training):
         # Restore sess, cost from last training
@@ -26,6 +24,7 @@ class train_evaluate:
         dev_costs = []
         best_dev_accuracy = float('-inf')
         dev_accuracies = []
+        train_accuracies = []
         if restore_from is not None:
             if os.path.isdir(restore_from):
                 sess_path = tf.train.latest_checkpoint(restore_from)
@@ -36,22 +35,19 @@ class train_evaluate:
                 costs = np.load(os.path.join(restore_from, "costs.npy")).tolist()
                 dev_costs = np.load(os.path.join(restore_from, "dev_costs.npy")).tolist()
                 dev_accuracies = np.load(os.path.join(restore_from, "dev_accuracies.npy")).tolist()
+                train_accuracies = np.load(os.path.join(restore_from, "train_accuracies.npy")).tolist()
                 best_dev_accuracy = np.load(os.path.join(restore_from,"best_dev_accuracy.npy"))[0]
 
-        return begin_at_epoch, costs, dev_costs, best_dev_accuracy, dev_accuracies
+        return begin_at_epoch, costs, dev_costs, best_dev_accuracy, dev_accuracies, train_accuracies
 
     def train(self, X_train, Y_train, X_dev, Y_dev, model_dir, restore_from = None, print_cost = True):
         m = X_train.shape[0]
         
-        model = self.train_model
+        model = self.model
         accuracy = model.accuracy
         cost = model.cost
 
-        if self.params.use_batch_norm:
-            with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
-                optimizer = tf.train.AdamOptimizer(self.params.learning_rate).minimize(cost)
-        else:
-            optimizer = tf.train.AdamOptimizer(self.params.learning_rate).minimize(cost)
+        optimizer = tf.train.AdamOptimizer(self.params.learning_rate).minimize(cost)
 
         last_saver = tf.train.Saver(max_to_keep = 1)
         best_saver = tf.train.Saver(max_to_keep = 1)
@@ -63,7 +59,7 @@ class train_evaluate:
             if (self.weights_file is not None) and (restore_from is None):
                 model.load_weights(self.weights_file, sess)
             
-            begin_at_epoch, costs, dev_costs, best_dev_accuracy, dev_accuracies = self.restoreSession(last_saver, sess, restore_from, is_training = True)
+            begin_at_epoch, costs, dev_costs, best_dev_accuracy, dev_accuracies, train_accuracies = self.restoreSession(last_saver, sess, restore_from, is_training = True)
             
             for epoch in range(self.params.num_epochs):
                 count_batch = 0
@@ -89,11 +85,12 @@ class train_evaluate:
                     count_batch += 1
                 
                 costs.append(minibatch_cost) 
-
+                
                 # compute dev cost
                 dev_cost, dev_accuracy = self.evaluate(X_dev, Y_dev, sess)
                 dev_costs.append(dev_cost)
                 dev_accuracies.append(dev_accuracy)
+                train_accuracies.append(minibatch_accuracy)
 
                 if print_cost == True and epoch % 1 == 0:
                     print ("Cost after epoch %i: %f" % (begin_at_epoch + epoch + 1, minibatch_cost))    
@@ -116,11 +113,12 @@ class train_evaluate:
             np.save(os.path.join(model_dir,'last_weights', "costs"), costs)
             np.save(os.path.join(model_dir,'last_weights', "dev_costs"), dev_costs)  
             np.save(os.path.join(model_dir,'last_weights', "dev_accuracies"), dev_accuracies)
+            np.save(os.path.join(model_dir,'last_weights', "train_accuracies"), train_accuracies)
 
     def evaluate(self, X_test, Y_test, sess):
         # Evaluate the dev set. Used inside a session.
         m = X_test.shape[0]
-        model = self.test_model
+        model = self.model
         accuracy = model.accuracy
         logits = model.logits
         cost = model.cost     
@@ -149,7 +147,7 @@ class train_evaluate:
     def predict(self, X_test, Y_test, restore_from):
         # Make prediction. Used outside a session.
         m = X_test.shape[0]
-        model = self.test_model
+        model = self.model
         accuracy = model.accuracy
         logits = model.logits
         probs = model.probs
@@ -160,7 +158,9 @@ class train_evaluate:
         with tf.Session() as sess:
             # init = tf.global_variables_initializer()
             # sess.run(init)
-
+            if (self.weights_file is not None) and (restore_from is None):
+                model.load_weights(self.weights_file, sess)
+                
             self.restoreSession(last_saver, sess, restore_from, False)
             
             '''
