@@ -11,8 +11,8 @@ args = argument_parser(sys.argv)
 # Load data
 # 50,000/5,000/5,000
 params = Params("../experiments/base_model/params.json")
-train_L, train_ab, train_bins, train_grayRGB, train_resized_images, train_labels = load_training_set(args, size = 1, seed = 130)
-dev_L, dev_ab, dev_bins, dev_grayRGB, dev_resized_images, dev_labels ,test_L, test_ab, test_bins, test_grayRGB, test_resized_images, test_labels = load_dev_test_set(args, dev_size = 1, seed = 10)
+train_L, train_ab, train_bins, train_grayRGB, train_resized_images, train_labels = load_training_set(args)
+dev_L, dev_ab, dev_bins, dev_grayRGB, dev_resized_images, dev_labels ,test_L, test_ab, test_bins, test_grayRGB, test_resized_images, test_labels = load_dev_test_set(args)
 
 # Weight directory
 model_dir = "./weights_transfer_learning"
@@ -22,7 +22,7 @@ best_path = os.path.join(model_dir, 'best_weights')
 last_path = os.path.join(model_dir, 'last_weights')
 
 # Build model
-train_evaluate = train_evaluate(params, vgg_model, "vgg16_weights.npz")
+train_evaluate = train_evaluate(params, vgg_model, "../../CS230_Project/model/vgg16_weights.npz")
 
 # Train and predict
 if args.train:
@@ -30,7 +30,6 @@ if args.train:
 	    train_evaluate.train(train_resized_images, train_labels, train_resized_images, train_labels, model_dir, last_path)
 	else:
 	    train_evaluate.train(train_resized_images, train_labels, train_resized_images, train_labels, model_dir)
-print "*********", train_labels
 if args.predict:
     # X = dev_resized_images
     # Y = dev_labels

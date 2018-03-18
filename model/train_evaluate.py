@@ -117,11 +117,6 @@ class train_evaluate:
             np.save(os.path.join(model_dir,'last_weights', "dev_costs"), dev_costs)  
             np.save(os.path.join(model_dir,'last_weights', "dev_accuracies"), dev_accuracies)
 
-            for i in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES):
-                if i.name == "model/fc3/dense/bias:0":
-                    print sess.run(i)
-                    break
-
     def evaluate(self, X_test, Y_test, sess):
         # Evaluate the dev set. Used inside a session.
         m = X_test.shape[0]

@@ -24,11 +24,11 @@ def argument_parser(argv):
         return parser.parse_args()
 
 def load_training_set(args, size = None, seed = None):
-    DIR_TRAIN = "../data/lab_result/train_lab/"
+    DIR_TRAIN = "../../CS230_Project/data/lab_result/train_lab/"
     if args.toy:
-        DIR_TRAIN = "../data/lab_result/100_train_lab/"  
+        DIR_TRAIN = "../../CS230_Project/data/lab_result/100_train_lab/"  
     if args.superlarge:
-        DIR_TRAIN = "../data/lab_result/super_train_lab/"
+        DIR_TRAIN = "../../CS230_Project/data/lab_result/super_train_lab/"
 
 
     if seed is not None:
@@ -64,11 +64,11 @@ def load_training_set(args, size = None, seed = None):
     return train_L, train_ab, train_bins, train_grayRGB ,train_resized_images, train_labels
 
 def load_dev_test_set(args, dev_size = None, seed = None):
-    DIR_TEST = "../data/lab_result/test_lab/"
+    DIR_TEST = "../../CS230_Project/data/lab_result/test_lab/"
     if args.toy:
-        DIR_TEST = "../data/lab_result/100_test_lab/"
+        DIR_TEST = "../../CS230_Project/data/lab_result/100_test_lab/"
     if args.superlarge:
-        DIR_TEST = "../data/lab_result/super_test_lab/"
+        DIR_TEST = "../../CS230_Project/data/lab_result/super_test_lab/"
 
     if seed is not None:
         np.random.seed(seed)
@@ -111,8 +111,8 @@ def load_dev_test_set(args, dev_size = None, seed = None):
 
 
 def load_training_dev_test_set(args, dev_size = 2500, seed = None):
-    DIR_TRAIN = "../data/lab_result/train_lab/"
-    DIR_TEST = "../data/lab_result/test_lab/"
+    DIR_TRAIN = "../../CS230_Project/data/lab_result/train_lab/"
+    DIR_TEST = "../../CS230_Project/data/lab_result/test_lab/"
 
     train_L = np.load(DIR_TRAIN + "L.npy")
     train_ab = np.load(DIR_TRAIN + "ab.npy")
