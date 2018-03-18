@@ -11,8 +11,8 @@ args = argument_parser(sys.argv)
 # Load data
 # 50,000/5,000/5,000
 params = Params("../experiments/base_model/params.json")
-train_resized_images, train_labels = load_training_set(args,size=1)
-dev_resized_images, dev_labels, test_resized_images, test_labels = load_dev_test_set(args, dev_size=1)
+train_resized_images, train_labels = load_training_set(args)
+dev_resized_images, dev_labels, test_resized_images, test_labels = load_dev_test_set(args)
 
 # Weight directory
 model_dir = "./weights_transfer_learning"
