@@ -131,11 +131,14 @@ def load_training_dev_test_set(args, dev_size = 2500, seed = None):
 def show1Result(train_evaluate, X, Y, start_index, save_path):
     labels_dict = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     predict_cost, predict_logits, predict_accuracy, predict_probs, predict_predictions = train_evaluate.predict(X[start_index:start_index + 1], Y[start_index:start_index + 1], save_path)
-    plt.imshow(X)
-    print("prediction:", labels_dict[predict_predictions[0]])
+    plt.imshow(X[start_index])
+    print("prediction:", labels_dict[int(predict_predictions[0])])
     print("predict_probs",predict_probs)
     print("cost:", predict_cost)
     print("accuracy:", predict_accuracy)
     plt.show()
 
-
+def showResult(train_evaluate, X, Y, save_path):
+    labels_dict = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+    predict_cost, predict_logits, predict_accuracy, predict_probs, predict_predictions = train_evaluate.predict(X, Y, save_path)
+    return predict_accuracy

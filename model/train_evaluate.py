@@ -182,6 +182,6 @@ class train_evaluate:
             for i in range(m):
                 predict_costs[i], predict_logits[i, :], predict_accuracy[i], predict_probs[i, :], predict_predictions[i] = sess.run([cost, logits, accuracy, probs, prediction], feed_dict={model.X: X_test[i:i+1], model.Y: Y_test[i:i+1]})
 
-            return predict_costs, predict_logits, predict_accuracy, predict_probs
+            return predict_costs, predict_logits, predict_accuracy, predict_probs, predict_predictions
 
 

@@ -1,6 +1,6 @@
 import sys
 from utils import Params, plotLabImage
-from main_utils import argument_parser, load_training_set, load_dev_test_set, show5Results, show1Result, showBestResult
+from main_utils import argument_parser, load_training_set, load_dev_test_set, show1Result, showResult
 import os
 from train_evaluate import train_evaluate
 from vgg_model import vgg_model
@@ -32,13 +32,17 @@ if args.train:
 	    train_evaluate.train(train_resized_images, train_labels, dev_resized_images, dev_labels, model_dir)
 
 if args.predict:
-    # X = dev_resized_images
-    # Y = dev_labels
+    X = dev_resized_images
+    Y = dev_labels
 
     # show1Result(train_evaluate, X, Y, 0, last_path)
 
-    X = train_resized_images
-    Y = train_labels
+    # X = train_resized_images
+    # Y = train_labels
+    # show1Result(train_evaluate, X, Y, 0, last_path)
+    acc = showResult(train_evaluate, X, Y, last_path)
+    print np.sum(acc)
 
-    show1Result(train_evaluate, X, Y, 0, last_path)
+
+
 
