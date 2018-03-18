@@ -135,8 +135,6 @@ class train_evaluate:
             # Select a minibatch
             (minibatch_X, minibatch_Y) = minibatch
             temp_cost, temp_accuracy, predictions = sess.run([cost, accuracy, model.predictions], feed_dict={model.X: minibatch_X, model.Y: minibatch_Y})
-            
-            print "predictions:", predictions
             # compute dev cost
             minibatch_cost += temp_cost / num_minibatches
             minibatch_accuracy += temp_accuracy / num_minibatches
