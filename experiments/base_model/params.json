@@ -1,0 +1,19 @@
+{
+    "learning_rate": 1e-3,
+    "train_batch_size": 128,
+    "test_batch_size": 64,
+    "num_epochs": 10,
+
+    "num_channels": 16,
+    "use_batch_norm": false,
+    "bn_momentum": 0.9,
+    "dropout_rate": 0,
+    "train_all_variables":false,
+    
+    "image_size": 224,
+    "reg_constant": 0.0,
+    "num_bins": 313,
+    "num_classes": 10,
+
+    "annealed_T": 0.32
+}
