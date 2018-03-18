@@ -78,7 +78,7 @@ def save_dict_to_json(d, json_path):
         d = {k: float(v) for k, v in d.items()}
         json.dump(d, f, indent=4)
 
-DATA_BINS = "../data/bins_313.npy"
+DATA_BINS = "../../CS230_Project/data/bins_313.npy"
 bin_dict = np.load(DATA_BINS).tolist()
 np_bin_dict = np.load(DATA_BINS)
 
