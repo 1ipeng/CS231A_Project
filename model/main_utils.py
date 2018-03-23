@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import Params, plotLabImage
+from skimage import color
 
 def argument_parser(argv):
     parser = argparse.ArgumentParser()
@@ -142,3 +143,41 @@ def showResult(train_evaluate, X, Y, save_path):
     labels_dict = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     predict_cost, predict_logits, predict_accuracy, predict_probs, predict_predictions = train_evaluate.predict(X, Y, save_path)
     return predict_accuracy
+
+
+def showFinalResult(train_evaluate, X, Y, save_path,  save_dir,):
+    labels_dict = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
+    predict_cost, predict_logits, predict_accuracy, predict_probs, predict_predictions = train_evaluate.predict(X, Y, save_path)
+
+
+    for i in range(5):
+        one_set_X = np.zeros((4, 224, 224, 3))
+        one_set_Y = np.ones((4, 1)) * Y[i, 0]
+
+        gray = np.load(save_dir + "gray_" + str(i) + ".npy")
+        gray= color.gray2rgb(gray)
+        colored = np.load(save_dir+"color_"+str(i)+".npy")
+        annealed=np.load(save_dir+"annealed_color_"+str(i)+".npy")
+        truth = np.load(save_dir+"ground_truth_"+str(i)+".npy")
+
+        one_set_X[0, :, :, :] = gray
+        one_set_X[1, :, :, :] = colored
+        one_set_X[2, :, :, :] = annealed
+        one_set_X[3, :, :, :] = truth
+
+        predict_cost, predict_logits, predict_accuracy, predict_probs, predict_predictions = train_evaluate.predict(one_set_X, one_set_Y, save_path)
+        print("Truth:", labels_dict[Y[i, 0].astype(int)])
+        print("Predictions:", labels_dict[predict_predictions.astype(int)])
+        print("Accuracy:", predict_accuracy)
+        #print("Probs:", predict_probs)
+        print("Probs:", np.max(predict_probs,axis=1))
+
+    return predict_accuracy
+
+
+
+
+
+
+
+
